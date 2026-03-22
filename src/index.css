@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: #ffffff;
+  --color-surface: #f4f4f2;
+  --color-border: #e8e8e5;
+  --color-text-primary: #0d0d0d;
+  --color-text-secondary: #888885;
+  --color-accent: #63752f;
+  --color-accent-hover: #4f5e25;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom cursor — fingertip hotspot at (64, 2) */
+  *, *::before, *::after {
+    cursor: url('/cursor-128.png') 64 2, auto !important;
+  }
+
+  body {
+    @apply bg-bg text-primary font-sans antialiased;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  /* Grain texture overlay for hero section */
+  .grain-overlay {
+    position: relative;
+  }
+
+  .grain-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 200px 200px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Tab navigation */
+  .tab-btn {
+    @apply pt-4 pb-5 text-sm font-semibold tracking-label uppercase transition-colors duration-200 border-b-2 border-transparent leading-snug;
+    color: rgba(255,255,255,0.45);
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .tab-btn.active {
+    color: #ffffff;
+    border-color: #DE761B;
+  }
+
+  .tab-btn:hover:not(.active) {
+    color: rgba(255,255,255,0.8);
+  }
+
+  /* Primary CTA */
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-accent text-white text-sm font-semibold tracking-label uppercase px-8 py-4 transition-colors duration-200 hover:bg-accent-hover;
+    border-radius: 20px;
+  }
+
+  /* Secondary CTA — outlined */
+  .btn-secondary {
+    @apply inline-flex items-center gap-2 border border-primary text-primary text-sm font-semibold tracking-label uppercase px-8 py-4 transition-colors duration-200 hover:bg-primary hover:text-white;
+    border-radius: 20px;
+  }
+}
+
+/* ── Skeleton shimmer ─────────────────────────────────────────────────────── */
+@keyframes skeleton-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #ebebeb 25%,
+    #f5f5f5 50%,
+    #ebebeb 75%
+  );
+  background-size: 800px 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+@layer utilities {
+  .text-display {
+    font-size: clamp(2.8rem, 7vw, 6.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+  }
+
+  .text-hero-sub {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  /* Hide scrollbar but keep scroll functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
