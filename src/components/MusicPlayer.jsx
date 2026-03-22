@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const SONG = { src: '/midnight-lanterns.mp3', title: 'Midnight Lanterns' }
+const EVENTS = ['click', 'keydown', 'touchstart', 'scroll']
 
 // ── Singleton audio — created once, survives all page navigations ──────────
 let _audio = null
@@ -29,21 +30,34 @@ const MusicPlayer = () => {
   })
   const [visible, setVisible] = useState(false)
 
-  // Attempt autoplay on first mount — skipped if user has manually paused
+  // Attempt autoplay — if blocked by browser policy, wait for first user interaction
   useEffect(() => {
     const audio = getAudio()
-    if (!audio || !audio.paused || _userPaused) return
+    if (!audio || _userPaused) return
 
     const tryPlay = async () => {
+      if (_userPaused || !audio.paused) return
       try {
         await audio.play()
         setPlaying(true)
         setVisible(true)
         setTimeout(() => setVisible(false), 3000)
       } catch {
-        setPlaying(false)
+        // Autoplay blocked — attach one-time interaction listener
+        const onInteraction = async () => {
+          if (_userPaused || !audio.paused) return
+          try {
+            await audio.play()
+            setPlaying(true)
+            setVisible(true)
+            setTimeout(() => setVisible(false), 3000)
+          } catch { /* still blocked — user can press play manually */ }
+          EVENTS.forEach(e => document.removeEventListener(e, onInteraction))
+        }
+        EVENTS.forEach(e => document.addEventListener(e, onInteraction, { once: true }))
       }
     }
+
     tryPlay()
   }, [])
 
