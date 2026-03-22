@@ -7,15 +7,23 @@ import { fadeUp } from '../utils/motionVariants'
  * tags, optional "closed" notice, and a live link button.
  */
 const MiniExperienceCard = ({ project }) => {
-  const { title, description, keyLearning, tags, thumbnail, closedNotice, liveHref } = project
+  const { title, description, keyLearning, tags, thumbnail, closedNotice, liveHref, desktopOnly } = project
+
+  // On touch devices, desktop-only cards are non-clickable
+  const isMobileBlocked = desktopOnly && typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
+
+  const handleClick = () => {
+    if (isMobileBlocked || !liveHref) return
+    window.open(liveHref, '_blank', 'noopener,noreferrer')
+  }
 
   return (
     <motion.article
       variants={fadeUp}
-      whileHover={{ y: -6, boxShadow: '0 24px 48px rgba(0,0,0,0.09)' }}
+      whileHover={isMobileBlocked ? {} : { y: -6, boxShadow: '0 24px 48px rgba(0,0,0,0.09)' }}
       transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-      className="group flex flex-col bg-white border border-border rounded-card overflow-hidden cursor-pointer"
-      onClick={() => liveHref && window.open(liveHref, '_blank', 'noopener,noreferrer')}
+      className={`group flex flex-col bg-white border border-border rounded-card overflow-hidden ${isMobileBlocked ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}
+      onClick={handleClick}
     >
       {/* Thumbnail */}
       <div className="w-full aspect-video overflow-hidden relative">
@@ -65,11 +73,24 @@ const MiniExperienceCard = ({ project }) => {
           ))}
         </div>
 
-        {/* Live link — stopPropagation not needed since card click handles navigation */}
+        {/* Live link button */}
         {liveHref && (
-          <span className="btn-primary self-start mt-2 text-xs px-5 py-3">
-            Try it ↗
-          </span>
+          desktopOnly ? (
+            <>
+              {/* Mobile: disabled "Desktop Only" label */}
+              <span className="md:hidden self-start mt-2 text-xs px-5 py-3 rounded-card border border-border text-secondary bg-surface cursor-not-allowed select-none">
+                🖥 Desktop Only
+              </span>
+              {/* Desktop: normal button */}
+              <span className="hidden md:inline-flex btn-primary self-start mt-2 text-xs px-5 py-3">
+                Try it ↗
+              </span>
+            </>
+          ) : (
+            <span className="btn-primary self-start mt-2 text-xs px-5 py-3">
+              Try it ↗
+            </span>
+          )
         )}
       </div>
     </motion.article>
