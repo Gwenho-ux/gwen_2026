@@ -20,7 +20,7 @@ const ScrollCircle = ({ opacity }) => (
  * Reusable two-stage video: plays `startSrc` once, then loops `loopSrc` silently.
  * `className` is applied to both video elements (position / size).
  */
-const TwoStageVideo = ({ startSrc, loopSrc, className }) => {
+const TwoStageVideo = ({ startSrc, loopSrc, poster, className }) => {
   const loopRef = useRef(null)
   const [stage, setStage] = useState('intro') // 'intro' | 'loop'
 
@@ -35,8 +35,11 @@ const TwoStageVideo = ({ startSrc, loopSrc, className }) => {
         key="intro"
         className={`${className} transition-opacity duration-700 ${stage === 'intro' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         src={startSrc}
+        poster={poster}
         autoPlay
+        muted
         playsInline
+        preload="auto"
         onEnded={onIntroEnded}
         aria-hidden="true"
       />
@@ -48,6 +51,7 @@ const TwoStageVideo = ({ startSrc, loopSrc, className }) => {
         muted
         playsInline
         loop
+        preload="auto"
         aria-hidden="true"
       />
     </>
@@ -69,7 +73,8 @@ const HeroSection = () => {
       <div className="hidden md:block absolute inset-0">
         <TwoStageVideo
           startSrc="/desktop_start.mp4"
-          loopSrc="/desktop_loop.mp4?v=2"
+          loopSrc="/desktop_loop.mp4"
+          poster="/poster-desktop.jpg"
           className={videoClass}
         />
       </div>
@@ -82,6 +87,7 @@ const HeroSection = () => {
         <TwoStageVideo
           startSrc="/mobile_start.mp4"
           loopSrc="/mobile_loop.mp4"
+          poster="/poster-mobile.jpg"
           className={videoClass}
         />
       </div>
