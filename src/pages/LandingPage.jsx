@@ -29,6 +29,7 @@ const LandingPage = () => {
 
       {/* Section B — Product Carousel */}
       <motion.section
+        id="craft"
         className="pt-28 bg-bg overflow-hidden"
         variants={fadeIn}
         initial="hidden"

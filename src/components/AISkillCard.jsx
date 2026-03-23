@@ -10,7 +10,7 @@ import { fadeUp } from '../utils/motionVariants'
  */
 
 const Row = ({ label, children }) => (
-  <div className="grid grid-cols-[140px_1fr] gap-6 py-4 border-b border-border last:border-b-0 items-start">
+  <div className="flex flex-col gap-2 md:grid md:grid-cols-[140px_1fr] md:gap-6 py-4 border-b border-border last:border-b-0 items-start">
     <span className="text-[10px] font-semibold tracking-label uppercase text-secondary pt-0.5 shrink-0">
       {label}
     </span>

@@ -7,9 +7,20 @@ const GRAIN_STYLE = {
   backgroundSize: '200px 200px',
 }
 
+const scrollToCraft = () =>
+  document.getElementById('craft')?.scrollIntoView({ behavior: 'smooth' })
+
 const ScrollCircle = ({ opacity }) => (
-  <motion.div style={{ opacity }} className="absolute bottom-0 left-0 right-0 flex justify-center z-10">
-    <div className="w-56 h-56 rounded-full bg-accent flex flex-col items-center justify-start pt-5 gap-1" style={{ transform: 'translateY(66%)' }}>
+  <motion.div
+    style={{ opacity }}
+    className="absolute bottom-0 left-0 right-0 flex justify-center z-10 cursor-pointer"
+    onClick={scrollToCraft}
+    role="button"
+    aria-label="Scroll to My Areas of Craft"
+    tabIndex={0}
+    onKeyDown={(e) => e.key === 'Enter' && scrollToCraft()}
+  >
+    <div className="w-[9.8rem] h-[9.8rem] rounded-full bg-accent flex flex-col items-center justify-start pt-5 gap-1" style={{ transform: 'translateY(66%)' }}>
       <motion.span animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.4, ease: 'easeInOut' }} className="text-white text-lg leading-none" aria-hidden="true">↓</motion.span>
       <p className="text-[11px] font-semibold tracking-widest uppercase text-white">Scroll for my works</p>
     </div>
