@@ -20,7 +20,7 @@ const PageHero = ({ category, children }) => {
   const imgOpacity = useTransform(scrollYProgress, [0, 0.55], [1, 0])
 
   return (
-    <div ref={heroRef} className="relative px-6 py-28 border-b border-border overflow-hidden">
+    <div ref={heroRef} className="relative px-6 py-28 border-b border-white/10 overflow-hidden bg-black">
 
       {/* Decorative product image — right side, fades left into bg */}
       {category.heroBg && (
@@ -52,7 +52,7 @@ const PageHero = ({ category, children }) => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.4 }}
             onClick={() => navigate(-1)}
-            className="self-start flex items-center gap-1.5 text-xs font-semibold tracking-widest uppercase text-secondary hover:text-primary transition-colors"
+            className="self-start flex items-center gap-1.5 text-xs font-semibold tracking-widest uppercase text-white/50 hover:text-white transition-colors"
           >
             ← Back
           </motion.button>
@@ -71,7 +71,7 @@ const PageHero = ({ category, children }) => {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-4xl md:text-6xl font-extrabold tracking-display text-primary leading-tight"
+          className="text-4xl md:text-6xl font-extrabold tracking-display text-white leading-tight"
         >
           {category.title}
         </motion.h1>
@@ -80,7 +80,7 @@ const PageHero = ({ category, children }) => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-xl text-secondary w-[55%] md:w-auto md:max-w-xl"
+          className="text-xl text-white/60 w-[55%] md:w-auto md:max-w-xl"
         >
           {category.tagline}
         </motion.p>

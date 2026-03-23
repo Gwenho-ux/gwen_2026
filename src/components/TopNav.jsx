@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import HamburgerMenu from './HamburgerMenu'
 import MusicPlayer from './MusicPlayer'
 
@@ -25,6 +25,8 @@ const rightItems = [
 const TopNav = () => {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const { pathname } = useLocation()
+  const isLanding = pathname === '/'
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -35,17 +37,15 @@ const TopNav = () => {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-white/80 backdrop-blur-md border-b border-border'
-            : 'bg-black/35 backdrop-blur-sm border-b border-white/10'
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-white/10 backdrop-blur-md ${
+          isLanding && !scrolled ? 'bg-black/35' : 'bg-black/90'
         }`}
       >
         <div className="max-w-7xl mx-auto px-3 md:px-4 xl:px-6 h-16 flex items-center justify-between gap-2">
           {/* Logo */}
           <NavLink
             to="/"
-            className={`font-bold text-[13px] xl:text-base tracking-tight hover:text-accent transition-colors shrink-0 ${scrolled ? 'text-primary' : 'text-white'}`}
+            className="font-bold text-[13px] xl:text-base tracking-tight text-white hover:text-accent transition-colors shrink-0"
           >
             GWENDERLAND.
           </NavLink>
@@ -60,8 +60,8 @@ const TopNav = () => {
                 className={({ isActive }) =>
                   `text-[10px] lg:text-[11px] xl:text-[12px] font-semibold tracking-label uppercase transition-colors relative pb-px whitespace-nowrap ${
                     isActive
-                      ? `${scrolled ? 'text-primary' : 'text-white'} after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-accent`
-                      : scrolled ? 'text-secondary hover:text-primary' : 'text-white/70 hover:text-white'
+                      ? 'text-white after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-accent'
+                      : 'text-white/60 hover:text-white'
                   }`
                 }
               >
@@ -76,7 +76,7 @@ const TopNav = () => {
               <NavLink
                 key={to}
                 to={to}
-                className={`text-[10px] lg:text-[11px] xl:text-[12px] font-semibold tracking-label uppercase transition-colors whitespace-nowrap ${scrolled ? 'text-secondary hover:text-primary' : 'text-white/70 hover:text-white'}`}
+                className="text-[10px] lg:text-[11px] xl:text-[12px] font-semibold tracking-label uppercase transition-colors whitespace-nowrap text-white/60 hover:text-white"
               >
                 {label}
               </NavLink>
@@ -92,7 +92,7 @@ const TopNav = () => {
           <button
             onClick={() => setMenuOpen(true)}
             aria-label="Open menu"
-            className={`md:hidden transition-colors p-1 ${scrolled ? 'text-secondary hover:text-primary' : 'text-white hover:text-white/70'}`}
+            className="md:hidden transition-colors p-1 text-white hover:text-white/70"
           >
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
               <path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
