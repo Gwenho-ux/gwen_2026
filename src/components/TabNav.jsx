@@ -16,7 +16,7 @@ const TabNav = ({ tabs, activeTab, onTabChange }) => {
           role="tab"
           aria-selected={activeTab === id}
           onClick={() => onTabChange(id)}
-          className={`tab-btn flex-1 px-3 text-center break-words hyphens-auto ${activeTab === id ? 'active' : ''}`}
+          className={`tab-btn flex-1 px-3 text-center whitespace-normal break-keep ${activeTab === id ? 'active' : ''}`}
         >
           {label}
         </button>

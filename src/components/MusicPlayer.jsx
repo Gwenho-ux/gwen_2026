@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 const SONG = { src: '/midnight-lanterns.mp3', title: 'Midnight Lanterns' }
 const EVENTS = ['click', 'keydown', 'touchstart', 'scroll']
@@ -28,7 +28,6 @@ const MusicPlayer = () => {
     const a = getAudio()
     return a ? !a.paused : false
   })
-  const [visible, setVisible] = useState(false)
 
   // Attempt autoplay — if blocked by browser policy, wait for first user interaction
   useEffect(() => {
@@ -40,8 +39,6 @@ const MusicPlayer = () => {
       try {
         await audio.play()
         setPlaying(true)
-        setVisible(true)
-        setTimeout(() => setVisible(false), 3000)
       } catch {
         // Autoplay blocked — attach one-time interaction listener
         const onInteraction = async () => {
@@ -49,8 +46,6 @@ const MusicPlayer = () => {
           try {
             await audio.play()
             setPlaying(true)
-            setVisible(true)
-            setTimeout(() => setVisible(false), 3000)
           } catch { /* still blocked — user can press play manually */ }
           EVENTS.forEach(e => document.removeEventListener(e, onInteraction))
         }
@@ -72,55 +67,59 @@ const MusicPlayer = () => {
       await audio.play()
       _userPaused = false
       setPlaying(true)
-      setVisible(true)
-      setTimeout(() => setVisible(false), 2500)
     }
   }
 
   return (
-    <div className="flex items-center gap-2">
-      {/* Song title — briefly fades in on play */}
-      <AnimatePresence>
-        {visible && (
-          <motion.span
-            initial={{ opacity: 0, x: 6 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 6 }}
-            transition={{ duration: 0.35 }}
-            className="hidden sm:block text-[11px] font-medium tracking-wide text-secondary whitespace-nowrap"
-          >
-            ♪ {SONG.title}
-          </motion.span>
-        )}
-      </AnimatePresence>
-
-      {/* Play / Pause button — large tap target */}
-      <button
-        onClick={toggle}
-        aria-label={playing ? 'Pause music' : 'Play music'}
-        className="flex items-center justify-center w-10 h-10 rounded-full text-secondary hover:text-primary transition-colors"
-        title={SONG.title}
-      >
+    <motion.div
+      initial={{ opacity: 0, y: -6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: 0.2 }}
+      className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-surface hover:bg-border/40 transition-colors"
+    >
+      {/* Waveform bars (playing) or static music note (paused) */}
+      <span className="flex items-end gap-[3px] h-4 w-5 shrink-0">
         {playing ? (
-          <span className="flex items-end gap-[3px] h-5">
-            {[1, 2, 3].map((i) => (
-              <motion.span
-                key={i}
-                className="w-[4px] rounded-full bg-accent inline-block"
-                animate={{ height: ['7px', '18px', '5px', '15px', '7px'] }}
-                transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.15, ease: 'easeInOut' }}
-              />
-            ))}
-          </span>
+          [1, 2, 3].map((i) => (
+            <motion.span
+              key={i}
+              className="w-[3px] rounded-full bg-accent inline-block"
+              animate={{ height: ['5px', '14px', '4px', '12px', '5px'] }}
+              transition={{ duration: 0.9, repeat: Infinity, delay: i * 0.15, ease: 'easeInOut' }}
+            />
+          ))
         ) : (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" className="text-secondary">
             <path d="M9 18V6l12-2v12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             <circle cx="6" cy="18" r="3" stroke="currentColor" strokeWidth="1.5" />
             <circle cx="18" cy="16" r="3" stroke="currentColor" strokeWidth="1.5" />
           </svg>
         )}
+      </span>
+
+      {/* Song name — always visible */}
+      <span className="hidden sm:block text-[11px] font-medium tracking-wide text-secondary whitespace-nowrap">
+        {SONG.title}
+      </span>
+
+      {/* Play / Pause button */}
+      <button
+        onClick={toggle}
+        aria-label={playing ? 'Pause music' : 'Play music'}
+        className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-bg shrink-0 hover:opacity-80 transition-opacity"
+      >
+        {playing ? (
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true">
+            <rect x="1.5" y="1" width="2.5" height="8" rx="1" />
+            <rect x="6" y="1" width="2.5" height="8" rx="1" />
+          </svg>
+        ) : (
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true">
+            <path d="M2 1.5l7 3.5-7 3.5V1.5z" />
+          </svg>
+        )}
       </button>
-    </div>
+    </motion.div>
   )
 }
 

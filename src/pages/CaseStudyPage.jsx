@@ -1,11 +1,104 @@
+import { useState, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import TopNav from '../components/TopNav'
 import Footer from '../components/Footer'
 import FloatingChatbot from '../components/FloatingChatbot'
 import { getCaseStudyById } from '../data/caseStudies'
 import { fadeUp, staggerContainerFast } from '../utils/motionVariants'
 import LazyImage from '../components/LazyImage'
+
+const slideVariants = {
+  enter: (d) => ({ x: d > 0 ? '100%' : '-100%', opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (d) => ({ x: d > 0 ? '-100%' : '100%', opacity: 0 }),
+}
+
+const ThumbnailCarousel = ({ images, alt }) => {
+  const [index, setIndex] = useState(0)
+  const [direction, setDirection] = useState(1)
+
+  const go = useCallback((next) => {
+    setDirection(next > index ? 1 : -1)
+    setIndex(next)
+  }, [index])
+
+  const prev = () => go((index - 1 + images.length) % images.length)
+  const next = () => go((index + 1) % images.length)
+
+  // Preload only the prev and next images — never the full set
+  const adjacentSrcs = [
+    images[(index - 1 + images.length) % images.length],
+    images[(index + 1) % images.length],
+  ]
+
+  return (
+    <div className="w-full flex flex-col gap-3">
+      {/* Hidden preload links for adjacent images only */}
+      <div aria-hidden="true" className="hidden">
+        {adjacentSrcs.map((src) => (
+          <link key={src} rel="preload" as="image" href={src} />
+        ))}
+      </div>
+
+      <div className="relative w-full aspect-[16/9] rounded-card overflow-hidden bg-surface">
+        <AnimatePresence initial={false} custom={direction}>
+          <motion.div
+            key={index}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0"
+          >
+            <img
+              src={images[index]}
+              alt={`${alt} — ${index + 1} / ${images.length}`}
+              loading="eager"
+              decoding="async"
+              className="w-full h-full object-cover"
+            />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Prev / Next arrows */}
+        <button
+          onClick={prev}
+          aria-label="Previous image"
+          className="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 text-white text-lg flex items-center justify-center hover:bg-black/80 transition-colors z-10"
+        >
+          ‹
+        </button>
+        <button
+          onClick={next}
+          aria-label="Next image"
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/50 text-white text-lg flex items-center justify-center hover:bg-black/80 transition-colors z-10"
+        >
+          ›
+        </button>
+
+        {/* Counter badge */}
+        <span className="absolute bottom-3 right-3 bg-black/60 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full z-10 tabular-nums">
+          {index + 1} / {images.length}
+        </span>
+      </div>
+
+      {/* Dot indicators — show max 15 dots, compact on large sets */}
+      <div className="flex justify-center gap-1.5 flex-wrap">
+        {images.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => go(i)}
+            aria-label={`Go to image ${i + 1}`}
+            className={`w-2 h-2 rounded-full transition-colors duration-200 ${i === index ? 'bg-accent' : 'bg-border hover:bg-secondary'}`}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
 
 const Section = ({ label, children }) => (
   <motion.div
@@ -100,25 +193,25 @@ const CaseStudyPage = () => {
           initial="hidden"
           animate="visible"
         >
-          {/* Meta row — thumbnail left, meta fields right */}
+          {/* Meta row — image top, meta fields below */}
           <motion.div
             variants={fadeUp}
-            className="flex flex-col md:flex-row gap-8 py-12 border-b border-border"
+            className="flex flex-col gap-8 py-12 border-b border-border"
           >
-            {/* Thumbnail */}
-            {cs.thumbnail && (
-              <div className="md:w-72 shrink-0">
-                <LazyImage
-                  src={cs.thumbnail}
-                  alt={cs.title}
-                  className="object-cover"
-                  wrapperClassName="w-full aspect-[4/3] rounded-card overflow-hidden"
-                />
-              </div>
-            )}
+            {/* Thumbnail / Carousel */}
+            {cs.gallery?.length > 0 ? (
+              <ThumbnailCarousel images={cs.gallery} alt={cs.title} />
+            ) : cs.thumbnail ? (
+              <LazyImage
+                src={cs.thumbnail}
+                alt={cs.title}
+                className="object-cover"
+                wrapperClassName="w-full aspect-[16/9] rounded-card overflow-hidden"
+              />
+            ) : null}
 
             {/* Meta fields */}
-            <div className="flex flex-col justify-center gap-6 flex-1">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               <div className="flex flex-col gap-1">
                 <p className="text-[11px] font-semibold tracking-label uppercase text-accent">Role</p>
                 <p className="text-base font-medium text-primary">{d.role}</p>

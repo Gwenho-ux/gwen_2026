@@ -20,10 +20,10 @@ const Footer = () => {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true }}
-      className="border-t border-border bg-bg px-6 py-8"
+      className="border-t border-white/10 bg-black px-6 py-8"
     >
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-        <span className="text-xs text-secondary">
+        <span className="text-xs text-white/40">
           © {year} GWENDERLAND. All rights reserved.
         </span>
 
@@ -32,7 +32,7 @@ const Footer = () => {
             <Link
               key={to}
               to={to}
-              className="text-[11px] font-semibold tracking-label uppercase text-secondary hover:text-primary transition-colors"
+              className="text-[11px] font-semibold tracking-label uppercase text-white/40 hover:text-white transition-colors"
             >
               {label}
             </Link>

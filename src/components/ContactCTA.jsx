@@ -39,7 +39,7 @@ const CopyButton = ({ text }) => {
  */
 const ContactCTA = () => {
   return (
-    <section id="contact" className="border-t border-border overflow-hidden">
+    <section id="contact" className="border-t border-border overflow-hidden py-16 md:py-24">
       <div className="flex flex-col-reverse md:flex-row min-h-[480px]">
 
         {/* Left — content (bottom on mobile, left on desktop) */}

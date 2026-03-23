@@ -112,6 +112,33 @@ const LandingPage = () => {
       <div id="contact">
         <ContactCTA />
       </div>
+
+      {/* Section E — Vibe-coded interlude */}
+      <div className="bg-black border-t border-white/10">
+        <div className="w-full h-[80vw] md:h-[85vh] overflow-hidden">
+          <video
+            src="/vibe-coded.mp4"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover object-center"
+            aria-hidden="true"
+          />
+        </div>
+        <ScatterText
+          label="By the way"
+          segments={[
+            { text: 'BTW, this whole site? ', color: '#ffffff' },
+            { text: 'Vibe-coded',             color: '#DC4A19' },
+            { text: ' from nothing—visuals, music, all ', color: '#ffffff' },
+            { text: 'AI magic',               color: '#DC4A19' },
+            { text: '.',                      color: '#ffffff' },
+          ]}
+          className="pt-16 pb-36 px-6 bg-black"
+        />
+      </div>
+
       <Footer />
 
       <FloatingChatbot />

@@ -20,7 +20,7 @@ const ScrollCircle = ({ opacity }) => (
     tabIndex={0}
     onKeyDown={(e) => e.key === 'Enter' && scrollToCraft()}
   >
-    <div className="w-[9.8rem] h-[9.8rem] rounded-full bg-accent flex flex-col items-center justify-start pt-5 gap-1" style={{ transform: 'translateY(66%)' }}>
+    <div className="w-[9.8rem] h-[9.8rem] rounded-full bg-accent flex flex-col items-center justify-start pt-5 gap-1" style={{ transform: 'translateY(46%)' }}>
       <motion.span animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.4, ease: 'easeInOut' }} className="text-white text-lg leading-none" aria-hidden="true">↓</motion.span>
       <p className="text-[11px] font-semibold tracking-widest uppercase text-white">Scroll for my works</p>
     </div>

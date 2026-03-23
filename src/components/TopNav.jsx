@@ -41,24 +41,24 @@ const TopNav = () => {
             : 'bg-black/35 backdrop-blur-sm border-b border-white/10'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-3 md:px-4 xl:px-6 h-16 flex items-center justify-between gap-2">
           {/* Logo */}
           <NavLink
             to="/"
-            className={`font-bold text-base tracking-tight hover:text-accent transition-colors shrink-0 ${scrolled ? 'text-primary' : 'text-white'}`}
+            className={`font-bold text-[13px] xl:text-base tracking-tight hover:text-accent transition-colors shrink-0 ${scrolled ? 'text-primary' : 'text-white'}`}
           >
             GWENDERLAND.
           </NavLink>
 
           {/* Center nav — hidden on mobile */}
-          <nav className="hidden md:flex items-center gap-7" aria-label="Primary navigation">
+          <nav className="hidden md:flex items-center gap-2 lg:gap-4 xl:gap-7 min-w-0" aria-label="Primary navigation">
             {navItems.map(({ label, to }) => (
               <NavLink
                 key={to}
                 to={to}
                 end={to === '/'}
                 className={({ isActive }) =>
-                  `text-[12px] font-semibold tracking-label uppercase transition-colors relative pb-px ${
+                  `text-[10px] lg:text-[11px] xl:text-[12px] font-semibold tracking-label uppercase transition-colors relative pb-px whitespace-nowrap ${
                     isActive
                       ? `${scrolled ? 'text-primary' : 'text-white'} after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-accent`
                       : scrolled ? 'text-secondary hover:text-primary' : 'text-white/70 hover:text-white'
@@ -71,12 +71,12 @@ const TopNav = () => {
           </nav>
 
           {/* Right items — hidden on mobile */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-2 lg:gap-4 xl:gap-6 shrink-0">
             {rightItems.map(({ label, to }) => (
               <NavLink
                 key={to}
                 to={to}
-                className={`text-[12px] font-semibold tracking-label uppercase transition-colors ${scrolled ? 'text-secondary hover:text-primary' : 'text-white/70 hover:text-white'}`}
+                className={`text-[10px] lg:text-[11px] xl:text-[12px] font-semibold tracking-label uppercase transition-colors whitespace-nowrap ${scrolled ? 'text-secondary hover:text-primary' : 'text-white/70 hover:text-white'}`}
               >
                 {label}
               </NavLink>
@@ -84,7 +84,9 @@ const TopNav = () => {
           </div>
 
           {/* Music player */}
-          <MusicPlayer />
+          <div className="shrink-0">
+            <MusicPlayer />
+          </div>
 
           {/* Mobile hamburger button */}
           <button

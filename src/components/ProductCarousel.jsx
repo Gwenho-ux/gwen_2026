@@ -139,16 +139,15 @@ const ProductCarousel = () => {
           return (
             <motion.div
               key={product.id}
-              // Hide ±2 items on mobile, show all on desktop
-              className={`shrink-0 flex items-center justify-center ${absRel === 2 ? 'hidden md:flex' : ''} ${!isCenter ? 'cursor-pointer' : ''}`}
+              className={`shrink-0 flex items-center justify-center cursor-pointer ${absRel === 2 ? 'hidden md:flex' : ''}`}
               animate={{
-                width: isCenter ? tier.size : tier.size,
+                width: tier.size,
                 opacity: tier.opacity,
                 filter: `blur(${tier.blur}px)`,
                 zIndex: tier.zIndex,
               }}
               transition={{ type: 'spring', stiffness: 280, damping: 30 }}
-              onClick={() => { if (!isCenter) setActive(origIdx) }}
+              onClick={() => isCenter ? navigate(product.route) : setActive(origIdx)}
               whileHover={!isCenter ? 'hover' : 'rest'}
               initial="rest"
               variants={wiggle}
@@ -160,8 +159,14 @@ const ProductCarousel = () => {
                   width: tier.size,
                   height: tier.size,
                   filter: isCenter ? 'drop-shadow(0 20px 40px rgba(0,0,0,0.13))' : 'none',
+                  y: isCenter ? [0, -10, 0] : 0,
                 }}
-                transition={{ type: 'spring', stiffness: 280, damping: 30 }}
+                transition={isCenter ? {
+                  width:  { type: 'spring', stiffness: 280, damping: 30 },
+                  height: { type: 'spring', stiffness: 280, damping: 30 },
+                  filter: { type: 'spring', stiffness: 280, damping: 30 },
+                  y: { repeat: Infinity, duration: 2.8, ease: 'easeInOut' },
+                } : { type: 'spring', stiffness: 280, damping: 30 }}
                 className="object-contain"
                 draggable={false}
               />

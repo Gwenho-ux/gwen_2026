@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
+import { useNavigate } from 'react-router-dom'
 
 /**
  * Shared hero banner for all category pages.
@@ -8,6 +9,7 @@ import { motion, useScroll, useTransform } from 'framer-motion'
  */
 const PageHero = ({ category, children }) => {
   const heroRef = useRef(null)
+  const navigate = useNavigate()
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ['start start', 'end start'],
@@ -44,6 +46,18 @@ const PageHero = ({ category, children }) => {
         style={{ y: titleY, opacity: titleOpacity }}
         className="relative z-10 max-w-7xl mx-auto flex flex-col gap-5"
       >
+        {window.history.length > 1 && (
+          <motion.button
+            initial={{ opacity: 0, x: -8 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
+            onClick={() => navigate(-1)}
+            className="self-start flex items-center gap-1.5 text-xs font-semibold tracking-widest uppercase text-secondary hover:text-primary transition-colors"
+          >
+            ← Back
+          </motion.button>
+        )}
+
         <motion.span
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
