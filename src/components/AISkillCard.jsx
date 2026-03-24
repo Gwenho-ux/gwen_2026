@@ -130,7 +130,7 @@ const AISkillCard = ({ project }) => {
       {/* ── Toggle button ───────────────────────────────────────── */}
       <button
         onClick={() => setExpanded((prev) => !prev)}
-        className="flex items-center justify-center gap-2 w-full py-4 border-t border-border text-[11px] font-semibold tracking-label uppercase text-secondary hover:text-primary hover:bg-surface transition-colors duration-200"
+        className="flex items-center justify-center gap-2 w-full py-4 border-t border-border text-xs font-bold tracking-label uppercase text-orange-400 hover:text-orange-300 hover:bg-surface transition-colors duration-200"
       >
         <motion.span
           animate={{ rotate: expanded ? 180 : 0 }}

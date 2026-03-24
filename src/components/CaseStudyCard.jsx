@@ -66,7 +66,7 @@ const CaseStudyCard = ({ caseStudy }) => {
           ))}
         </div>
 
-        <span className="mt-3 self-start text-[11px] font-semibold tracking-label uppercase text-secondary group-hover:text-accent transition-colors duration-200">
+        <span className="mt-3 self-start text-xs font-bold tracking-label uppercase text-orange-400 group-hover:text-orange-300 transition-colors duration-200">
           View Case Study →
         </span>
       </div>
