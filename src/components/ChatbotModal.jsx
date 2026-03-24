@@ -168,9 +168,10 @@ const initialMessages = [{ id: 'init-01', role: 'assistant', text: GREETING_TEXT
 const initialHistory = [{ role: 'assistant', content: GREETING_TEXT }]
 
 // ─── Message content renderer ────────────────────────────────────────────────
-// Splits on → [label](url) anywhere in the text, then handles **bold** + line breaks
+// Single-pass parser: detects → [label](url) nav buttons and email addresses
 
-const NAV_BUTTON_RE = /→\s*\[(.+?)\]\((.+?)\)/g
+// Group 1+2 = nav button, Group 3 = email
+const SEGMENT_RE = /→\s*\[(.+?)\]\((.+?)\)|([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g
 
 const renderPlainText = (text) =>
   text.split('\n').map((line, i, arr) => {
@@ -183,14 +184,55 @@ const renderPlainText = (text) =>
     )
   })
 
+// ─── Copy email field ─────────────────────────────────────────────────────────
+
+const LINKEDIN_URL = 'https://www.linkedin.com/in/gwen-h-a522b31a5'
+
+const ContactLinks = ({ email }) => {
+  const [copied, setCopied] = useState(false)
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(email).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    })
+  }
+
+  return (
+    <div className="mt-2 flex flex-col gap-2">
+      <button
+        onClick={handleCopy}
+        className="w-full flex items-center justify-between gap-3 bg-white/10 border border-white/20 hover:border-white/40 rounded-card px-3 py-2 transition-colors group cursor-pointer"
+        aria-label={`Copy email ${email}`}
+      >
+        <span className="text-xs text-white/80 truncate">{email}</span>
+        <span className="shrink-0 text-xs font-bold text-black bg-white px-3 py-1 rounded-full group-hover:bg-white/80 transition-colors whitespace-nowrap">
+          {copied ? 'Copied ✓' : 'Copy'}
+        </span>
+      </button>
+      <a
+        href={LINKEDIN_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="w-full flex items-center justify-between gap-3 bg-white/10 border border-white/20 hover:border-white/40 rounded-card px-3 py-2 transition-colors group no-underline"
+      >
+        <span className="text-xs text-white/80">LinkedIn</span>
+        <span className="shrink-0 text-xs font-bold text-black bg-white px-3 py-1 rounded-full group-hover:bg-white/80 transition-colors whitespace-nowrap">
+          Visit →
+        </span>
+      </a>
+    </div>
+  )
+}
+
+// ─── Nav button ───────────────────────────────────────────────────────────────
+
 const INTERNAL_HOST = 'gwen-2026.vercel.app'
 
 const toInternalPath = (url) => {
   try {
     const parsed = new URL(url)
-    if (parsed.hostname === INTERNAL_HOST) {
-      return parsed.pathname + parsed.hash
-    }
+    if (parsed.hostname === INTERNAL_HOST) return parsed.pathname + parsed.hash
   } catch {
     // already a relative path
   }
@@ -202,34 +244,35 @@ const btnClass =
 
 const NavButton = ({ label, url }) => {
   const internalPath = toInternalPath(url)
-
   return (
     <div className="mt-2 flex items-center justify-between gap-3 bg-white/10 border border-white/20 rounded-card px-3 py-2">
       <span className="text-xs text-white/70 leading-snug">{label}</span>
       {internalPath ? (
-        <Link to={internalPath} className={btnClass}>
-          Go Now →
-        </Link>
+        <Link to={internalPath} className={btnClass}>Go Now →</Link>
       ) : (
-        <a href={url} target="_blank" rel="noopener noreferrer" className={btnClass}>
-          Go Now →
-        </a>
+        <a href={url} target="_blank" rel="noopener noreferrer" className={btnClass}>Go Now →</a>
       )}
     </div>
   )
 }
+
+// ─── Main renderer ────────────────────────────────────────────────────────────
 
 const MessageContent = ({ text }) => {
   const segments = []
   let lastIndex = 0
   let match
 
-  const re = new RegExp(NAV_BUTTON_RE)
+  const re = new RegExp(SEGMENT_RE)
   while ((match = re.exec(text)) !== null) {
     if (match.index > lastIndex) {
       segments.push({ type: 'text', content: text.slice(lastIndex, match.index) })
     }
-    segments.push({ type: 'nav', label: match[1], url: match[2] })
+    if (match[1]) {
+      segments.push({ type: 'nav', label: match[1], url: match[2] })
+    } else {
+      segments.push({ type: 'email', value: match[3] })
+    }
     lastIndex = re.lastIndex
   }
   if (lastIndex < text.length) {
@@ -238,11 +281,11 @@ const MessageContent = ({ text }) => {
 
   return (
     <>
-      {segments.map((seg, i) =>
-        seg.type === 'nav'
-          ? <NavButton key={i} label={seg.label} url={seg.url} />
-          : <span key={i}>{renderPlainText(seg.content)}</span>
-      )}
+      {segments.map((seg, i) => {
+        if (seg.type === 'nav') return <NavButton key={i} label={seg.label} url={seg.url} />
+        if (seg.type === 'email') return <ContactLinks key={i} email={seg.value} />
+        return <span key={i}>{renderPlainText(seg.content)}</span>
+      })}
     </>
   )
 }
