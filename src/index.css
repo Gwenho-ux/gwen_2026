@@ -17,9 +17,9 @@
     scroll-behavior: smooth;
   }
 
-  /* Custom cursor — fingertip hotspot at (64, 2) */
+  /* Custom cursor — fingertip hotspot scaled to 100×100 image (41, 6) */
   *, *::before, *::after {
-    cursor: url('/cursor-128.png') 64 2, auto !important;
+    cursor: url('/cursor-100.png') 41 6, auto !important;
   }
 
   body {
