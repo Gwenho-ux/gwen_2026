@@ -307,16 +307,38 @@ const TypingIndicator = () => (
   </div>
 )
 
+// ─── Session persistence helpers ─────────────────────────────────────────────
+
+const SESSION_KEY_MESSAGES = 'gwenderland_chat_messages'
+const SESSION_KEY_HISTORY  = 'gwenderland_chat_history'
+
+const loadSession = (key, fallback) => {
+  try {
+    const raw = sessionStorage.getItem(key)
+    return raw ? JSON.parse(raw) : fallback
+  } catch {
+    return fallback
+  }
+}
+
+const saveSession = (key, value) => {
+  try { sessionStorage.setItem(key, JSON.stringify(value)) } catch { /* quota exceeded */ }
+}
+
 // ─── Main component ──────────────────────────────────────────────────────────
 
 const ChatbotModal = ({ onClose }) => {
-  const [messages, setMessages] = useState(initialMessages)
-  const [history, setHistory] = useState(initialHistory)
+  const [messages, setMessages] = useState(() => loadSession(SESSION_KEY_MESSAGES, initialMessages))
+  const [history, setHistory]   = useState(() => loadSession(SESSION_KEY_HISTORY,  initialHistory))
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef(null)
 
   const hasUserMessaged = messages.some((m) => m.role === 'user')
+
+  // Persist to sessionStorage whenever conversation changes
+  useEffect(() => { saveSession(SESSION_KEY_MESSAGES, messages) }, [messages])
+  useEffect(() => { saveSession(SESSION_KEY_HISTORY,  history)  }, [history])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
