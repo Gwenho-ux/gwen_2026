@@ -71,11 +71,13 @@ const MusicPlayer = () => {
   }
 
   return (
-    <motion.div
+    <motion.button
+      onClick={toggle}
+      aria-label={playing ? 'Pause music' : 'Play music'}
       initial={{ opacity: 0, y: -6 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: 0.2 }}
-      className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-surface hover:bg-border/40 transition-colors"
+      className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-border bg-surface hover:bg-border/40 transition-colors cursor-pointer"
     >
       {/* Waveform bars (playing) or static music note (paused) */}
       <span className="flex items-end gap-[3px] h-4 w-5 shrink-0">
@@ -97,17 +99,13 @@ const MusicPlayer = () => {
         )}
       </span>
 
-      {/* Song name — always visible */}
+      {/* Song name */}
       <span className="hidden sm:block text-[11px] font-medium tracking-wide text-secondary whitespace-nowrap">
         {SONG.title}
       </span>
 
-      {/* Play / Pause button */}
-      <button
-        onClick={toggle}
-        aria-label={playing ? 'Pause music' : 'Play music'}
-        className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-bg shrink-0 hover:opacity-80 transition-opacity"
-      >
+      {/* Play / Pause icon */}
+      <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary text-bg shrink-0">
         {playing ? (
           <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true">
             <rect x="1.5" y="1" width="2.5" height="8" rx="1" />
@@ -118,8 +116,8 @@ const MusicPlayer = () => {
             <path d="M2 1.5l7 3.5-7 3.5V1.5z" />
           </svg>
         )}
-      </button>
-    </motion.div>
+      </span>
+    </motion.button>
   )
 }
 
