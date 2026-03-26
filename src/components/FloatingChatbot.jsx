@@ -30,6 +30,15 @@ const FloatingChatbot = () => {
 
   return (
     <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end">
+      {/* Mobile backdrop — olive green overlay, hidden on md+ */}
+      {isOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-[#63752f]/60 backdrop-blur-sm z-[-1]"
+          onClick={() => setIsOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
       {isOpen && <ChatbotModal onClose={() => setIsOpen(false)} />}
 
       <button
