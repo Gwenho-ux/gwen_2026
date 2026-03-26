@@ -332,7 +332,12 @@ const ChatbotModal = ({ onClose }) => {
   const [history, setHistory]   = useState(() => loadSession(SESSION_KEY_HISTORY,  initialHistory))
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [showInfo, setShowInfo] = useState(false)
+  const infoHideTimer = useRef(null)
   const messagesEndRef = useRef(null)
+
+  const openInfo  = () => { clearTimeout(infoHideTimer.current); setShowInfo(true) }
+  const closeInfo = () => { infoHideTimer.current = setTimeout(() => setShowInfo(false), 150) }
 
   const hasUserMessaged = messages.some((m) => m.role === 'user')
 
@@ -418,22 +423,34 @@ const ChatbotModal = ({ onClose }) => {
 
       {/* Header — entire label group is the tooltip trigger */}
       <div className="flex items-center px-5 py-4 border-b border-white/20 rounded-t-card">
-        <div className="relative group flex items-center gap-2 cursor-default">
+        <div
+          className="relative flex items-center gap-2 cursor-default"
+          onMouseEnter={openInfo}
+          onMouseLeave={closeInfo}
+        >
           <span className="w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" aria-hidden="true" />
           <span className="text-sm font-bold text-white">Chat with AI Me</span>
           <span
             aria-label="About this AI"
-            className="flex items-center justify-center w-5 h-5 rounded-full border border-white/30 text-xs font-bold text-white/60 group-hover:border-white/70 group-hover:text-white transition-colors select-none"
+            className={`flex items-center justify-center w-5 h-5 rounded-full border text-xs font-bold transition-colors select-none ${
+              showInfo ? 'border-white/70 text-white' : 'border-white/30 text-white/60'
+            }`}
           >
             !
           </span>
 
-          {/* Tooltip */}
-          <div className="absolute top-8 left-0 w-64 bg-black border border-white/20 rounded-card p-4 z-50 opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-200 shadow-xl">
-            <p className="text-xs text-white/70 leading-relaxed">
-              <MessageContent text={INFO_CONTENT} />
-            </p>
-          </div>
+          {/* Tooltip — stays open while mouse is over trigger OR tooltip itself */}
+          {showInfo && (
+            <div
+              className="absolute top-8 left-0 w-72 bg-black border border-white/20 rounded-card p-4 z-50 shadow-xl"
+              onMouseEnter={openInfo}
+              onMouseLeave={closeInfo}
+            >
+              <p className="text-xs text-white/70 leading-relaxed">
+                <MessageContent text={INFO_CONTENT} />
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
