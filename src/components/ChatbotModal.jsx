@@ -405,7 +405,7 @@ const ChatbotModal = ({ onClose }) => {
   }
 
   return (
-    <div className="absolute bottom-16 right-0 w-80 sm:w-96 bg-black rounded-card shadow-2xl border-2 border-white flex flex-col overflow-visible">
+    <div className="absolute bottom-16 right-0 w-96 sm:w-[28rem] bg-black rounded-card shadow-2xl border-2 border-white/50 flex flex-col overflow-visible">
       {/* Floating avatar */}
       <motion.img
         src="/chatbot-avatar.png"
@@ -438,7 +438,7 @@ const ChatbotModal = ({ onClose }) => {
       </div>
 
       {/* Message area */}
-      <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4 max-h-72 overflow-x-hidden">
+      <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-4 max-h-96 overflow-x-hidden">
         {messages.map(({ id, role, text }) => (
           <div key={id} className={`flex ${role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div
