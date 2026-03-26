@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
 const GRAIN_STYLE = {
@@ -32,23 +32,8 @@ const ScrollCircle = ({ opacity }) => (
  * `className` is applied to both video elements (position / size).
  */
 const TwoStageVideo = ({ startSrc, loopSrc, poster, className }) => {
-  const introRef = useRef(null)
   const loopRef = useRef(null)
   const [stage, setStage] = useState('intro') // 'intro' | 'loop'
-
-  // Explicitly trigger play on mount — needed for mobile browsers that ignore autoPlay
-  useEffect(() => {
-    const intro = introRef.current
-    if (!intro) return
-    intro.play().catch(() => {
-      // If blocked, try again on first touch
-      const onTouch = () => {
-        intro.play().catch(() => {})
-        document.removeEventListener('touchstart', onTouch)
-      }
-      document.addEventListener('touchstart', onTouch, { once: true })
-    })
-  }, [])
 
   const onIntroEnded = () => {
     setStage('loop')
@@ -58,7 +43,6 @@ const TwoStageVideo = ({ startSrc, loopSrc, poster, className }) => {
   return (
     <>
       <video
-        ref={introRef}
         key="intro"
         className={`${className} transition-opacity duration-700 ${stage === 'intro' ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         src={startSrc}
